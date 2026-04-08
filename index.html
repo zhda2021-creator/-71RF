@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>школа71</title>
+
+<link rel="icon" href="data:image/svg+xml,
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+<text y='0.9em' font-size='90'>🧠</text>
+</svg>">
+
+<style>
+body { margin:0; overflow:hidden; font-family:Arial; }
+
+/* новость */
+.news { padding:20px; }
+.loader { height:20px; background:#ddd; }
+.bar { height:100%; width:0; background:green; }
+
+/* вирус */
+.virus {
+    display:none;
+    background:black;
+    color:#0f0;
+    height:100vh;
+    font-family:monospace;
+}
+
+/* тряска */
+.shake {
+    animation: shake 0.1s infinite;
+}
+@keyframes shake {
+    25%{transform:translate(-3px,2px)}
+    50%{transform:translate(3px,-2px)}
+}
+
+/* текст */
+.warn {
+    position:absolute;
+    color:red;
+    font-size:20px;
+    animation: glitch 0.2s infinite;
+}
+@keyframes glitch {
+    50%{transform:translate(3px,-3px)}
+}
+
+/* крестики */
+.cross {
+    position:absolute;
+    color:red;
+    font-size:16px;
+}
+
+/* финальный текст */
+.finalText {
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    color:red;
+    font-size:28px;
+    text-align:center;
+    animation: glitch 0.2s infinite;
+}
+
+/* таймер */
+.timer {
+    font-size:40px;
+    color:red;
+}
+
+/* вспышка */
+.flash {
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:red;
+    opacity:0;
+    animation:flash 0.5s infinite;
+}
+@keyframes flash {
+    50%{opacity:0.3}
+}
+</style>
+</head>
+
+<body>
+
+<div class="news" id="news">
+<h1>Школа 71 — обновление системы</h1>
+<p>Загрузка...</p>
+<div class="loader"><div class="bar" id="bar"></div></div>
+</div>
+
+<div class="virus" id="virus">
+<div class="flash"></div>
+<div style="padding:20px">
+<h2>⚠ МАРАТ СЛОМАЛ ВАШЕ УСТРОЙСТВО ⚠</h2>
+<div class="timer" id="timer">10</div>
+</div>
+</div>
+
+<audio id="alarm" loop>
+<source src="https://www.soundjay.com/button/beep-10.mp3">
+</audio>
+
+<script>
+let p=0;
+function load(){
+    p+=Math.random()*5;
+    bar.style.width=p+"%";
+    if(p>=100) startVirus();
+    else setTimeout(load,100);
+}
+load();
+
+// запуск
+function startVirus(){
+    news.style.display="none";
+    virus.style.display="block";
+
+    document.body.classList.add("shake");
+
+    startTimer();
+    spamWarnings();
+
+    alarm.play().catch(()=>{});
+}
+
+// таймер (10 сек)
+let t=10;
+function startTimer(){
+    let el=document.getElementById("timer");
+
+    let int=setInterval(()=>{
+        t--;
+        el.textContent=t;
+
+        if(t<=0){
+            clearInterval(int);
+            finalChaos();
+        }
+    },1000);
+}
+
+// спам текста
+function spamWarnings(){
+    setInterval(()=>{
+        let w=document.createElement("div");
+        w.className="warn";
+        w.textContent="МАРАТ СЛОМАЛ ВАШЕ УСТРОЙСТВО";
+
+        w.style.top=Math.random()*100+"%";
+        w.style.left=Math.random()*100+"%";
+
+        document.body.appendChild(w);
+
+        setTimeout(()=>w.remove(),1000);
+    },80);
+}
+
+// финал
+function finalChaos(){
+    document.body.innerHTML="";
+
+    // крестики на весь экран
+    for(let y=0;y<window.innerHeight;y+=15){
+        for(let x=0;x<window.innerWidth;x+=15){
+            let c=document.createElement("div");
+            c.className="cross";
+            c.textContent="✖";
+            c.style.top=y+"px";
+            c.style.left=x+"px";
+            document.body.appendChild(c);
+        }
+    }
+
+    // финальный текст
+    let text=document.createElement("div");
+    text.className="finalText";
+    text.innerHTML="⚠ СИСТЕМА ПОВРЕЖДЕНА ⚠<br><br>🔥 ПЕРЕГРЕВ: 120°C 🔥<br><br>ОФИЦИАЛЬНОЕ СООБЩЕНИЕ СИСТЕМЫ";
+
+    document.body.appendChild(text);
+}
+
+// мигающий title
+setInterval(()=>{
+    document.title = Math.random()>0.5 ? "⚠ ВЗЛОМ ⚠" : "школа71";
+},400);
+
+// вибрация
+if(navigator.vibrate){
+    setInterval(()=>navigator.vibrate(300),800);
+}
+
+// звук
+document.body.addEventListener("click",()=>{
+    alarm.play();
+},{once:true});
+</script>
+
+
+
